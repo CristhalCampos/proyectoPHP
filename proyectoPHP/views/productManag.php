@@ -1,13 +1,13 @@
 <?php
-session_start();
-//Verificar que el usuario es administrador
-if (isset($_SESSION['email'])) {
-  if ($_SESSION['role'] !== 'admin') {
-    header("Location: home.php");
-    exit();
+  session_start();
+  //Verificar que el usuario es administrador
+  if (isset($_SESSION['email'])) {
+    if ($_SESSION['role'] !== 'admin') {
+      header("Location: home.php");
+      exit();
+    }
   }
-}
-require_once '../controllers/productController.php';
+  require_once '../controllers/productController.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,53 +32,30 @@ require_once '../controllers/productController.php';
       <?php
         $products = allProducts();
         if ($products) {
-          $i = 1;
           foreach ($products as $product) {
             echo "<div>
-                    <form name='form-products' id='form-products' method='POST'>
-                      <span>{$i}</span>
-                      <input type='hidden' name='product_id' value='{$product['product_id']}'>
-                      <input type='text' name='name' value='{$product['name']}' placeholder='Nombre del producto' readonly>
-                      <textarea name='description' maxlength='250' cols='50' rows='5' placeholder='Descripcion del producto' readonly>{$product['description']}</textarea>
-                      <input type='number' name='price' value='{$product['price']}' placeholder='Precio' readonly>
-                      <input type='text' name='image' value='{$product['image']}' placeholder='URL de la imagen' readonly>
-                      <button type='submit' name='delete-product'>Eliminar producto</button>
-                      <button type='submit' name='edit'>Editar datos</button>
-                      <button type='submit' name='save' disabled>Guardar</button>
-                    </form>
+			              <p>{$product['name']} | Precio: $ {$product['price']}</p> 
+                    <p>Descripción: {$product['description']}</p> 
+                    <p>URL de la imagen: {$product['image']}</p>
+                    <form method='POST'>
+                      <input type='hidden' name='id' value='{$product['product_id']}'>
+                      <button type='submit' name='delete'>Eliminar</button>
+                      <a href='updateProd.php?id={$product['product_id']}'>
+                        <button type='button'>Editar</button>
+                      </a>
+                  	</form>
                   </div>";
-            $i = $i + 1;
           }
         } else {
           echo "<div><p>No hay productos disponibles</p></div>";
         }
         //Eliminar producto
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_product'])) {
-          $id = $_POST['product_id'];
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
+          $id = $_POST['id'];
           $response = deleteProd($id);
-          if ($response == "Producto eliminado correctamente") {
-            echo $response;
-            header("Location: productManag.php"); //Actualizar la lista
-            exit();
-          } else {
-            echo $response;
-          }
-        }
-        //Modificar producto
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save'], $_POST['name'], $_POST['description'], $_POST['price'], $_POST['image'])) {
-          $id = $_POST['product_id'];
-          $name = trim($_POST['name']);
-          $description = trim($_POST['description']);
-          $price = trim($_POST['price']);
-          $image = trim($_POST['image']);
-          $response = updateProd($id, $name, $description, $price, $image);
-          if ($response == "Producto actualizado correctamente") {
-            echo $response;
-            header("Location: productManag.php"); //Actualizar la lista
-            exit();
-          } else {
-            echo $response;
-          }
+          echo $response;
+          header("Location: productManag.php"); //Redireccionar para actualizar la lista
+          exit();
         }
       ?>
       <h3>Añadir un producto</h3>
@@ -87,22 +64,18 @@ require_once '../controllers/productController.php';
         <textarea name="description" cols='50' rows='5' placeholder="Descripcion del producto" required></textarea>
         <input type="number" name="price" placeholder="Precio" required>
         <input type="text" name="image" placeholder="URL de la imagen" required>
-        <button type="submit" name="add_product">Añadir</button>
+        <button type="submit" name="add">Añadir</button>
       </form>
       <?php
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'], $_POST['name'], $_POST['description'], $_POST['price'], $_POST['image'])) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add'], $_POST['name'], $_POST['description'], $_POST['price'], $_POST['image'])) {
           $name = trim($_POST['name']);
           $description = trim($_POST['description']);
           $price = trim($_POST['price']);
           $image = trim($_POST['image']);
           $response = addProd($name, $description, $price, $image);
-          if ($response == "Producto añadido correctamente") {
-            echo $response;
-            header("Location: productManage.php"); //Actualizar la lista
-            exit();
-          } else {
-            echo $response;
-          }
+          echo $response;
+          header("Location: productManag.php"); //Redireccionar para actualizar la lista
+          exit();
         }
       ?>
     </main>

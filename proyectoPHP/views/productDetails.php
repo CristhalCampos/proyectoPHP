@@ -5,9 +5,8 @@
   } else {
     $role = 'user';
   }
-  // Verificar si el ID del producto está en la sesión
-  if (isset($_SESSION['product_id'])) {
-      $id = $_SESSION['product_id'];
+  if (isset($_GET['id'])) {
+    $id = $_GET['id'];
   }
 ?>
 <!DOCTYPE html>
@@ -32,12 +31,12 @@
         require_once '../controllers/productController.php';
         $product =  product($id);
         if ($product) {
-            echo "<div>
-                    <img src='{$product['image']}'>
-                    <h3>Nombre del producto: {$product['name']}</h3>
-                    <p>Precio: {$product['price']} $</p>
-                    <p>Descripción: {$product['description']}</p>
-                  </div>";
+          echo "<div>
+                  <img src='{$product['image']}'>
+                  <h3>Nombre del producto: {$product['name']}</h3>
+                  <p>Precio: {$product['price']} $</p>
+                  <p>Descripción: {$product['description']}</p>
+                </div>";
         } else {
           echo "<div><p>No se encontró el producto</p></div>";
         }

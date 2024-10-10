@@ -3,11 +3,9 @@
     require_once '../connection/db.php';
     function registerUser($firstName, $lastName, $email, $password) {
         $connection = getConnection();
-        //Verificar si el correo ya está registrado
-        $email = $connection->real_escape_string($email); //Escapar el correo para evitar intecciones SQL
-        $sql1 = "SELECT * FROM users WHERE email = '$email'";
-        $result = $connection->query($sql1);
-        if ($result->num_rows > 0) {
+        //Verificar si el correo está registrado
+        $result = emailVerif($email);
+        if ($result) {
             return "El correo ya está registrado";
         } else {
             //Encriptar la contraseña
@@ -23,7 +21,7 @@
             }
         }
     }
-    function email_verif($email) {
+    function emailVerif($email) {
         $connection = getConnection();
         //Verificar si el correo está registrado
         $email = $connection->real_escape_string($email); //Escapar el correo para evitar intecciones SQL
@@ -77,7 +75,7 @@
     // Eliminar usuario por ID
     function deleteUser($id) {
         $connection = getConnection();
-        $sql = "DELETE FROM users WHERE id = $id";
+        $sql = "DELETE FROM users WHERE user_id = $id";
         return $connection->query($sql);
     }
 
@@ -87,7 +85,7 @@
         $firstName = $connection->real_escape_string($firstName); //Escapar el nombre para evitar intecciones SQL
         $lastName = $connection->real_escape_string($lastName); //Escapar el apellido para evitar intecciones SQL
         $email = $connection->real_escape_string($email); //Escapar el correo para evitar intecciones SQL
-        $sql = "UPDATE users SET first_name = '$firstName', last_name = '$lastName', email = '$email' WHERE id = $id";
+        $sql = "UPDATE users SET first_name = '$firstName', last_name = '$lastName', email = '$email' WHERE user_id = $id";
         if ($connection->query($sql) === true) {
             return "Usuario actualizado correctamente";
         } else {

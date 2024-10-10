@@ -41,7 +41,7 @@
   //Eliminar producto por ID
   function deleteProduct($id) {
     $connection = getConnection();
-    $sql = "DELETE FROM products WHERE id = $id";
+    $sql = "DELETE FROM products WHERE product_id = $id";
     return $connection->query($sql);
   }
   //Actualizar producto por ID
@@ -49,7 +49,7 @@
     $connection = getConnection();
     $name = $connection->real_escape_string($name);
     $description = $connection->real_escape_string($description);
-    $sql = "UPDATE products SET name = '$name', description = '$description', price = $price, image = '$image' WHERE id = $id";
+    $sql = "UPDATE products SET name = '$name', description = '$description', price = $price, image = '$image' WHERE product_id = $id";
     if ($connection->query($sql) === true) {
       return "Producto actualizado correctamente";
     } else {

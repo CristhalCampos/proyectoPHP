@@ -40,20 +40,13 @@
                     <img src='{$product['image']}'>
                     <h3>{$product['name']}</h3>
                     <p>{$product['price']} $</p>
-                    <form method='POST'>
-                      <input type='hidden' name='product_id' value='{$product['product_id']}'>
-                      <button type='submit' name='details'>Ver detalles</button>
-                    </form>
+                    <a href='productDetails.php?id={$product['product_id']}'>
+                      <button>Ver detalles</button>
+                    </a>
                   </div>";
           }
         } else {
           echo "<div><p>No hay productos disponibles</p></div>";
-        }
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['details'])) {
-          $id = $_POST['product_id'];
-          $_SESSION['product_id'] = $id; //Guardar ID en la sesión
-          header("Location: productDetails.php");
-          exit();
         }
       ?>
     </main>
